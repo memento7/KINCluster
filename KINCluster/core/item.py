@@ -1,34 +1,31 @@
 import settings
 
 class Item:
-    def __init__(self, title, content, date, keyword):
-        """
-            for using raw string, just return raw string in __str__
-        """
-        self.title = title
-        self.content = content
-        self.date = date
-        self.keyword = keyword
+    def __init__(self, **kwargs):
+        self._element = {}
+        for k, v in kwargs.items():
+            self._element[k] = v 
 
     def __str__(self):
+        """represent text to clustering
+            :apply n-gram or stemize if you need
         """
-            implemente function for document
-        """
-        return " ".join([self.title * settings.ITEM_TITLE_RATE,
-                         self.content * settings.ITEM_CONTENT_RATE,
-                         self.date * settings.ITEM_DATE_RATE,
-                         self.keyword * settings.ITEM_KEYWORD_RATE])
+        return " ".join(self.element)
 
     def __repr__(self):
-        return " ".join([self.title,
-                        self.content,
-                        self.date,
-                        self.keyword])
+        """represent vocabs in item
+        """
+        return " ".join(self.element)
 
-    # custom variable
-    params = {
-            'ITEM_TITLE_RATE': settings.ITEM_TITLE_RATE,
-            'ITEM_CONTENT_RATE': settings.ITEM_CONTENT_RATE,
-            'ITEM_DATE_RATE': settings.ITEM_DATE_RATE,
-            'ITEM_KEYWORD_RATE': settings.ITEM_KEYWORD_RATE,
-        }
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+           return other._element == self._element
+        return False 
+
+    @property
+    def element(self):
+        return [self._element[k] for k in self.element_keys]
+
+    @property
+    def element_keys(self):
+        return sorted(self._element.keys())

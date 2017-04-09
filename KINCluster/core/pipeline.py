@@ -1,4 +1,5 @@
 from core.item import Item
+import lib.tokenizer
 import settings
 
 from typing import List, Iterator
