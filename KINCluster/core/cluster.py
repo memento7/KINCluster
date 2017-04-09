@@ -17,10 +17,10 @@ class Cluster:
         self.trate = kwargs.get("trate", 0.98)
         self.epoch = kwargs.get("epoch", 11)
         self.thresh = kwargs.get("thresh", settings.THRESHOLD)
+        self.tokenizer = kwargs.get("tokenizer", lambda x: x.split())
 
         self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window)
         self._items = []
-        self._vocab = []
         self._vectors = []
         self._clusters = []
         self._dumps = []
@@ -28,23 +28,22 @@ class Cluster:
     def put_item(self, item: Item):
         self._items.append(item)
 
-    def put_vocab(self, vocab: str):
-        self._vocab.append(vocab)
-
     def __vocabs(self) -> Iterator[LabeledSentence]:
-        for idx, vocab in enumerate(self.vocab):
-            yield LabeledSentence(vocab, ['line_%s' % idx])
+        for idx, item in enumerate(self._items):
+            yield LabeledSentence(self.tokenizer(repr(item)), ['line_%s' % idx])
 
     def __setences(self) -> Iterator[LabeledSentence]:
         for idx, item in enumerate(self._items):
-            yield LabeledSentence(str(item), ['line_%s' % idx])
+            yield LabeledSentence(self.tokenizer(str(item)), ['line_%s' % idx])
 
-    def __cluster(self):
+    def __cluster(self) -> np.ndarray:
         return hcluster.fclusterdata(self._vectors, self.thresh, criterion="distance")
 
     def cluster(self):
-        """
-            documents must be list of list.
+        """cluster process
+            : build vocab, using repr of item
+            : train items, using str of item
+            : get _vectors and _clusters
         """
         self.model.build_vocab(self.__vocabs())
 
@@ -56,25 +55,27 @@ class Cluster:
         self._vectors = np.array(self.model.docvecs)
         self._clusters = self.__cluster()
 
-        dumps = dict.fromkeys(self.unique(), [])
+        dumps = dict.fromkeys(self.unique, [])
         for item, c in zip(self._items, self._clusters):
             dumps[c].append(item)
         self._dumps = list(dumps.values())
 
+    def similar(self, pos, neg=[], top=10):
+        return self.model.most_similar(positive=pos,negative=neg,topn=top)
     @property
     def vocab(self) -> List[str]:
-        return self._vocab or [repr(item) for item in self._items]
+        return self.model.vocab
     @property
     def dumps(self) -> List[List[Item]]:
         return self._dumps
     @property
-    def vecs(self) -> List[Any]:
+    def vecs(self) -> np.ndarray:
         return self._vectors
     @property
-    def unique(self) -> List[int]:
+    def unique(self) -> np.ndarray:
         return np.unique(self._clusters)
     @property
-    def clusters(self) -> List[int]:
+    def clusters(self) -> np.ndarray:
         return self._clusters
     def __len__(self):
         return len(self._clusters)

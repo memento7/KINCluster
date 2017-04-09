@@ -15,6 +15,28 @@ THRESHOLD = 12
 PIPELINES = [
 ]
 
+# item element setting
+ITEM_ELEMENT = [
+    'title',
+    'content',
+    'date',
+    'keyword'
+]
+
+STOP_WORDS = [
+]
+
+# tokens
+TOKEN_POS_TAG = [
+    'N*'
+]
+TOKEN_NEG_TAG = [
+]
+TOKEN_ZIP_TAG = [
+    ['N*', 'SL'],
+    
+]
+
 # user custom hyperparameter
 ITEM_TITLE_RATE     = 10
 ITEM_CONTENT_RATE   = 1
