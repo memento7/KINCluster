@@ -1,7 +1,7 @@
 from core.item import Item
 import settings
 
-from typing import List, Iterator, Any
+from typing import List, Iterator, Union, Any
 
 import numpy as np
 from gensim.models import Doc2Vec
@@ -14,12 +14,13 @@ class Cluster:
         alpha = kwargs.get("alpha", 0.025)
         min_alpha = kwargs.get("min_alpha", 0.025)
         window = kwargs.get("window", 5)
+        size = kwargs.get("size", 100)
         self.trate = kwargs.get("trate", 0.98)
         self.epoch = kwargs.get("epoch", 11)
         self.thresh = kwargs.get("thresh", settings.THRESHOLD)
         self.tokenizer = kwargs.get("tokenizer", lambda x: x.split())
 
-        self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window)
+        self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window, size=size)
         self._items = []
         self._vectors = []
         self._clusters = []
@@ -55,9 +56,9 @@ class Cluster:
         self._vectors = np.array(self.model.docvecs)
         self._clusters = self.__cluster()
 
-        dumps = dict.fromkeys(self.unique, [])
-        for item, c in zip(self._items, self._clusters):
-            dumps[c].append(item)
+        dumps = {c: [] for c in self.unique}
+        for c, item, vector in zip(self._clusters,self._items,self._vectors):
+            dumps[c].append((item, vector))
         self._dumps = list(dumps.values())
 
     def similar(self, pos, neg=[], top=10):
@@ -66,10 +67,10 @@ class Cluster:
     def vocab(self) -> List[str]:
         return self.model.vocab
     @property
-    def dumps(self) -> List[List[Item]]:
+    def dumps(self) -> List[List[Union[Item, np.ndarray]]]:
         return self._dumps
     @property
-    def vecs(self) -> np.ndarray:
+    def vectors(self) -> np.ndarray:
         return self._vectors
     @property
     def unique(self) -> np.ndarray:
