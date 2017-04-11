@@ -5,7 +5,6 @@ from typing import List, Union
 from itertools import chain
 import re
 
-
 # type hinting
 TAG = str
 
