@@ -5,7 +5,6 @@ from typing import List, Union
 from itertools import chain
 import re
 
-
 # type hinting
 TAG = str
 
@@ -46,7 +45,7 @@ def find_quotations(text):
 def tokenize(text) -> List[str]:
     return text.split()
 
-def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> str:
+def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> List[str]:
     # (extracted words, extracted text)
     def extract_quotations(text) -> Union[List[str], str]:
         matches = []
