@@ -9,14 +9,15 @@ class Pipeline:
         pass
 
     def capture_item(self) -> Iterator[Item]:
-        """
-            grab items
+        """grab items
+            :must be item generater
         """
         pass
 
     def dress_item(self, items: List[Item]):
-        """
-            clustered items
+        """dress item
+            :input items
+            :dress up your items, ex) push to db
         """
         pass
 
