@@ -2,6 +2,7 @@ from core.item import Item
 import settings
 
 from typing import List, Iterator, Union, Any
+from collections import Counter
 
 import numpy as np
 from gensim.models import Doc2Vec
@@ -22,6 +23,7 @@ class Cluster:
 
         self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window, size=size)
         self._items = []
+        self._counters = []
         self._vectors = []
         self._clusters = []
         self._dumps = []
@@ -31,7 +33,9 @@ class Cluster:
 
     def __vocabs(self) -> Iterator[LabeledSentence]:
         for idx, item in enumerate(self._items):
-            yield LabeledSentence(self.tokenizer(repr(item)), ['line_%s' % idx])
+            token = self.tokenizer(repr(item))
+            self._counters.append(Counter(token))
+            yield LabeledSentence(token, ['line_%s' % idx])
 
     def __setences(self) -> Iterator[LabeledSentence]:
         for idx, item in enumerate(self._items):
@@ -59,13 +63,20 @@ class Cluster:
         dumps = {c: [] for c in self.unique}
         for c, item, vector in zip(self._clusters,self._items,self._vectors):
             dumps[c].append((item, vector))
-        self._dumps = list(dumps.values())
+        self._dumps = [dump for dump in dumps.values() if len(dump) > (self.thresh / 2)]
 
     def similar(self, pos, neg=[], top=10):
         return self.model.most_similar(positive=pos,negative=neg,topn=top)
+
+    @property
+    def items(self) -> List[Item]:
+        return self._items
     @property
     def vocab(self) -> List[str]:
         return self.model.vocab
+    @property
+    def vocab_count(self) -> List[Counter]:
+        return self._counters
     @property
     def dumps(self) -> List[List[Union[Item, np.ndarray]]]:
         return self._dumps
@@ -78,5 +89,9 @@ class Cluster:
     @property
     def clusters(self) -> np.ndarray:
         return self._clusters
+    @property
+    def distribution(self) -> np.ndarray:
+        return Counter(self._clusters)
+
     def __len__(self):
         return len(self._clusters)
