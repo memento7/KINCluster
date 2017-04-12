@@ -25,6 +25,10 @@ class Item:
         return False 
 
     @property
+    def element_dict(self) -> dict:
+        return self._element
+
+    @property
     def element(self) -> List[Any]:
         return [self._element[k] for k in self.element_keys]
 
