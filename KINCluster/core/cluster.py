@@ -12,6 +12,13 @@ from scipy.cluster import vq as vq
 
 class Cluster:
     def __init__(self, **kwargs):
+        """hyperparameters
+            :alpha = learning rate
+            :min_alph = minimum learning reate
+            :window = max value of vector
+            :size = vector size
+            :tokenizer = lambda document: str -> list or words: List[str]
+        """
         alpha = kwargs.get("alpha", 0.025)
         min_alpha = kwargs.get("min_alpha", 0.025)
         window = kwargs.get("window", 5)
