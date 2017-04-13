@@ -15,9 +15,9 @@ class Cluster:
         alpha = kwargs.get("alpha", 0.025)
         min_alpha = kwargs.get("min_alpha", 0.025)
         window = kwargs.get("window", 5)
-        size = kwargs.get("size", 100)
+        size = kwargs.get("size", 500)
         self.trate = kwargs.get("trate", 0.98)
-        self.epoch = kwargs.get("epoch", 11)
+        self.epoch = kwargs.get("epoch", 12)
         self.thresh = kwargs.get("thresh", settings.THRESHOLD)
         self.tokenizer = kwargs.get("tokenizer", lambda x: x.split())
 
@@ -41,10 +41,10 @@ class Cluster:
         for idx, item in enumerate(self._items):
             yield LabeledSentence(self.tokenizer(str(item)), ['line_%s' % idx])
 
-    def __cluster(self) -> np.ndarray:
-        return hcluster.fclusterdata(self._vectors, self.thresh, criterion="distance")
+    def __cluster(self, method, metric, criterion) -> np.ndarray:
+        return hcluster.fclusterdata(self._vectors, self.thresh, method=method, metric=metric, criterion=criterion)
 
-    def cluster(self):
+    def cluster(self, method="ward", metric="cosine", criterion="inconsistent"):
         """cluster process
             : build vocab, using repr of item
             : train items, using str of item
@@ -58,7 +58,7 @@ class Cluster:
             self.model.min_alpha = self.model.alpha
 
         self._vectors = np.array(self.model.docvecs)
-        self._clusters = self.__cluster()
+        self._clusters = self.__cluster(method, metric, criterion)
 
         dumps = {c: [] for c in self.unique}
         for c, item, vector in zip(self._clusters,self._items,self._vectors):
