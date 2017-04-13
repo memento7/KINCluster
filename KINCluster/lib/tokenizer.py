@@ -1,14 +1,20 @@
-from konlpy.tag import Mecab
+from lib.stopwords import stopwords
 import settings
 
 from typing import List, Union
 from itertools import chain
 import re
 
+import os
+if os.name == 'nt':
+    from konlpy.tag import Twitter
+    tagger = Twitter()
+else:
+    from konlpy.tag import Mecab
+    tagger = Mecab()
+
 # type hinting
 TAG = str
-
-tagger = Mecab()
 
 stop_words = settings.STOP_WORDS
 pos_tag = settings.TOKEN_POS_TAG
@@ -22,9 +28,6 @@ def tokenizer_init():
     # zip_tag = [[]]
     # zip_token = ""
     pass
-
-def filter_stopwords(text) -> str:
-    return " ".join([t for t in text.split() if not t in settings.STOP_WORDS])
 
 def filter_tag(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> str:
     # negative filter
@@ -43,10 +46,9 @@ def find_quotations(text):
     return list(mat_small) + list(mat_double)
 
 def tokenize(text) -> List[str]:
-    return text.split()
+    return [word for word in text.split() if not word in stopwords]
 
 def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> List[str]:
-    # (extracted words, extracted text)
     def extract_quotations(text) -> Union[List[str], str]:
         matches = []
         c = 0
@@ -62,8 +64,10 @@ def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) 
                 words, tokens = map(list, zip(*tokens))
                 tokens = [("".join(words), 'ZIP')]
         for word in list(zip(*tokens))[0]:
-            yield word
-        
+            if not word in stopwords:
+                yield word
+
+    # return [tokens[0] for tokens in tagger.pos(text) if tokens[1][0] == 'N' ]
     matches, text = extract_quotations(text)
     words = [zip_tokens(tokens) for tokens in [tagger.pos(word) for word in text.split()]]
     ret = list(chain.from_iterable(words))
