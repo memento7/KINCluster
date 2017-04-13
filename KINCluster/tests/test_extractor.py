@@ -8,6 +8,7 @@
 
 import pytest
 
+from core.extractor import Extractor 
 from core.cluster import Cluster 
 from core.pipeline import Pipeline 
 from core.item import Item
@@ -17,37 +18,32 @@ import codecs
 
 test_text = ['2016헌나1.txt', '2014헌나1.txt']
 test_keyword = ['헌법판결문', '헌법판결문']
+
 class Pipeline(Pipeline):
     def capture_item(self):
         for text, keyword in zip(test_text, test_keyword):
             with codecs.open('tests/data/' + text, 'r', 'utf-8') as f:
                 content = f.read()
             yield Item(title=text,content=content,keyword=keyword,date='')
-    def dress_item(self, items):
-        pass
 
-def test_cluster1() :
-    """ Testing for cluster, using test data
-    """
-    cluster = Cluster(epoch=32, size=500, tokenizer=tokenize)
+def test_extractor1():
+    cluster = Cluster(epoch=32, tokenizer=tokenize)
     pipeline = Pipeline()
     for item in pipeline.capture_item():
         cluster.put_item(item)
     cluster.cluster()
 
-    # assert '캠프' in list(map(list, zip(*cluster.similar('노무현'))))[0]
-    # assert '사건' in list(map(list, zip(*cluster.similar('박근혜'))))[0]
-    
-    assert len(cluster.clusters) == len(test_text)
-    assert cluster.vectors.shape == (len(test_text), 500)
+    extractor = Extractor(cluster)
 
-    assert len(cluster.unique) <= len(test_text)
-    assert len(cluster.unique) == len(cluster.dumps)
+    for idx, dump in enumerate(cluster.dumps):
+        items, vectors = map(list, zip(*dump))
 
-    for dump in cluster.dumps:
-        items, vectors = zip(*dump)
+        topic_id = extractor.get_topic(idx, '탄핵')
+        topic = items[topic_id]
+        keywords = extractor.get_keywords(idx, 5)
 
-        for item in items:
-            assert isinstance(item, Item)
+        assert isinstance(topic_id, int)
+        assert 5 == len(keywords)
 
-        pipeline.dress_item(items)
+if __name__ == '__main__':
+    test_extractor1()
