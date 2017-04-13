@@ -53,7 +53,8 @@ class Cluster:
         self.model.build_vocab(self.__vocabs())
 
         for epoch in range(self.epoch):
-            self.model.train(self.__setences())
+            sentences = list(self.__setences())
+            self.model.train(sentences)
             self.model.alpha *= self.trate
             self.model.min_alpha = self.model.alpha
 
@@ -63,7 +64,7 @@ class Cluster:
         dumps = {c: [] for c in self.unique}
         for c, item, vector in zip(self._clusters,self._items,self._vectors):
             dumps[c].append((item, vector))
-        self._dumps = [dump for dump in dumps.values() if len(dump) > (self.thresh / 2)]
+        self._dumps = list(dumps.values())
 
     def similar(self, pos, neg=[], top=10):
         return self.model.most_similar(positive=pos,negative=neg,topn=top)

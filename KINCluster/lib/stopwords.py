@@ -6,7 +6,7 @@ from itertools import chain
 from os import listdir
 from os.path import join, dirname, abspath
 
-def stopwords():
+def __get_stopwords():
     path = abspath(__file__)
     stopwords_dir = join(dirname(__file__), 'stopwords')
     words = set()
@@ -14,3 +14,4 @@ def stopwords():
         for word in codecs.open(join(stopwords_dir, file_name), "r", "utf-8").readlines():
             words.add(word)
     return map(lambda x: x.strip(), words)
+stopwords = __get_stopwords()
