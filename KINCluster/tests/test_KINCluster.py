@@ -43,9 +43,9 @@ def test_app1():
     for idx, dump in enumerate(cluster.dumps):
         items, vectors = map(list, zip(*dump))
 
-        topic_id = extractor.get_topic(idx, '대통령')
+        topic_id = extractor.topic(idx, '대통령')
         topic = items[topic_id]
-        keywords = extractor.get_keywords(idx)
+        keywords = extractor.keywords(idx)
 
         print (keywords)
         pipeline.dress_item(items)
@@ -90,9 +90,9 @@ def test_app2():
     for idx, dump in enumerate(cluster.dumps):
         items, vectors = map(list, zip(*dump))
 
-        topic_id = extractor.get_topic(idx, '김태희')
+        topic_id = extractor.topic(idx, '김태희')
         topic = items[topic_id]
-        keywords = extractor.get_keywords(idx, 5)
+        keywords = extractor.keywords(idx, 5)
 
         print (topic)
         print (keywords)
