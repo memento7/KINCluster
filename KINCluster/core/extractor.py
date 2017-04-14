@@ -1,5 +1,5 @@
 from core.item import Item
-from lib.tokenizer import stemize
+from lib.tokenizer import stemize, tagging, is_noun
 from lib.stopwords import stopwords
 import settings
 
@@ -58,12 +58,12 @@ class Extractor:
         return Item(**{e: f(self, iid) for e, f in extractable.s.items()})
 
     @extractable
-    def topic(self, iid: itemID) -> int:
+    def topic(self, iid: itemID) -> Item:
         """topic
         """
         items, vectors = map(list, zip(*self.__c.dumps[iid]))
         _, index = Extractor.__find_center(vectors)
-        return index
+        return items[index]
 
     @extractable
     def keywords(self, iid: itemID, top: int = 32) -> List[str]:
@@ -83,7 +83,7 @@ class Extractor:
         def _get_score(t: wID) -> float:
             return _get_tf(t) * _get_idf(t) + _get_f(t) * 0.001
 
-        words = [(w, _get_score(w)) for w in counter.keys()]
+        words = [(w, _get_score(w)) for w in filter(lambda x: is_noun(x),counter.keys())]
         return sorted(words, key=lambda w: -float(w[1]))[:top]
 
     @extractable
