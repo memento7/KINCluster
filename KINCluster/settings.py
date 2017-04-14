@@ -38,27 +38,16 @@ ITEM_ELEMENT = [
     'keyword'
 ]
 
-STOP_WORDS = [
-]
 
 # Tokenizer setting
 TOKEN_POS_TAG = [
-    'N*'
 ]
 
 TOKEN_NEG_TAG = [
 ]
 
 TOKEN_ZIP_TAG = [
-    ['N*', 'SL'],    
 ]
-
-# # DB_SETTING
-# DB_HOST='175.207.13.225'
-# DB_USER='memento'
-# DB_PASSWORD='memento@0x100_'
-# DB_DB='memento'
-# DB_CHARSET='utf8'
 
 # user custom hyperparameter
 ITEM_TITLE_RATE     = 10
