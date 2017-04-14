@@ -13,6 +13,7 @@ class Pipeline:
         """grab items
             :must be item generater
         """
+        raise Exception('Override capture_item function to generator<Item>')
         pass
 
     def dress_item(self, item: Item, items: List[Item]):

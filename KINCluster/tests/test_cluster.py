@@ -29,7 +29,7 @@ class Pipeline(Pipeline):
 def test_cluster1() :
     """ Testing for cluster, using test data
     """
-    cluster = Cluster(epoch=32, size=500, tokenizer=tokenize)
+    cluster = Cluster(epoch=32, size=500, tokenizer="tokenize")
     pipeline = Pipeline()
     for item in pipeline.capture_item():
         cluster.put_item(item)

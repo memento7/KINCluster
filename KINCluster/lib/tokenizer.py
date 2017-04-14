@@ -16,6 +16,16 @@ else:
 # type hinting
 TAG = str
 
+class tokenizer:
+    s = {}
+    def __init__(self, func):
+        tokenizer.s[func.__name__] = func
+        self.func = func
+    def __get__(self, obj, klass=None):
+        def _call_(*args, **kwargs):
+            return self.func(obj, *args, **kwargs)
+        return _call_
+
 stop_words = settings.STOP_WORDS
 pos_tag = settings.TOKEN_POS_TAG
 neg_tag = settings.TOKEN_NEG_TAG
@@ -45,9 +55,15 @@ def find_quotations(text):
     mat_double = pat_double_quot.finditer(text)
     return list(mat_small) + list(mat_double)
 
+def is_noun(word):
+    w, t = tagging(word)[0]
+    return t[0] == 'N'
+
+@tokenizer
 def tokenize(text) -> List[str]:
     return [word for word in text.split() if not word in stopwords]
 
+@tokenizer
 def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> List[str]:
     def extract_quotations(text) -> Union[List[str], str]:
         matches = []

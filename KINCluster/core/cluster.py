@@ -1,4 +1,5 @@
 from core.item import Item
+from lib.tokenizer import tokenizer
 import settings
 
 from typing import List, Iterator, Union, Any
@@ -19,14 +20,14 @@ class Cluster:
             :size = vector size
             :tokenizer = lambda document: str -> list or words: List[str]
         """
-        alpha = kwargs.get("alpha", 0.025)
-        min_alpha = kwargs.get("min_alpha", 0.025)
-        window = kwargs.get("window", 5)
-        size = kwargs.get("size", 500)
-        self.trate = kwargs.get("trate", 0.98)
-        self.epoch = kwargs.get("epoch", 12)
-        self.thresh = kwargs.get("thresh", settings.THRESHOLD)
-        self.tokenizer = kwargs.get("tokenizer", lambda x: x.split())
+        alpha = kwargs.get("alpha", settings.C_LEARNING_RATE)
+        min_alpha = kwargs.get("min_alpha", settings.C_LEARNING_RATE_MIN)
+        window = kwargs.get("window", settings.C_WINDOW)
+        size = kwargs.get("size", settings.C_SIZE)
+        self.trate = kwargs.get("trate", settings.C_TRANING_RATE)
+        self.epoch = kwargs.get("epoch", settings.C_EPOCH)
+        self.thresh = kwargs.get("thresh", settings.C_THRESHOLD)
+        self.tokenizer = tokenizer.s[kwargs.get("tokenizer", settings.C_TOKENIZER)]
 
         self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window, size=size)
         self._items = []
@@ -51,7 +52,7 @@ class Cluster:
     def __cluster(self, method, metric, criterion) -> np.ndarray:
         return hcluster.fclusterdata(self._vectors, self.thresh, method=method, metric=metric, criterion=criterion)
 
-    def cluster(self, method=settings.METHOD, metric=settings.METRIC, criterion=settings.CRITERION):
+    def cluster(self, method=settings.C_METHOD, metric=settings.C_METRIC, criterion=settings.C_CRITERION):
         """cluster process
             : build vocab, using repr of item
             : train items, using str of item
