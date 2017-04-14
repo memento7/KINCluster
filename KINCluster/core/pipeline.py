@@ -2,7 +2,8 @@ from core.item import Item
 import lib.tokenizer
 import settings
 
-from typing import List, Iterator
+from typing import List, Iterator, Union, Any
+nparray = Any
 
 class Pipeline:
     def __init__(self):
@@ -14,10 +15,10 @@ class Pipeline:
         """
         pass
 
-    def dress_item(self, items: List[Item]):
+    def dress_item(self, item: Item, items: List[Item]):
         """dress item
-            :input items
-            :dress up your items, ex) push to db
+            :item (has element extractable)
+            :items (clustered items)
         """
         pass
 

@@ -20,7 +20,7 @@ class Pipeline(Pipeline):
         for item in items:
             assert isinstance(item, Item)
 
-def test_pipeline1() :
+def test_pipeline1():
     """ Testing for pipeline
     """
     pipeline = Pipeline()

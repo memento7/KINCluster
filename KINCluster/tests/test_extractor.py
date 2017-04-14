@@ -8,7 +8,7 @@
 
 import pytest
 
-from core.extractor import Extractor 
+from core.extractor import Extractor, extractable
 from core.cluster import Cluster 
 from core.pipeline import Pipeline 
 from core.item import Item
@@ -37,13 +37,15 @@ def test_extractor1():
 
     for idx, dump in enumerate(cluster.dumps):
         items, vectors = map(list, zip(*dump))
+        
+        assert {"topic", "keywords", "quotation"} == extractable.s.keys()
+        
+        extracted = extractor.dump(idx)
 
-        topic_id = extractor.get_topic(idx, '탄핵')
-        topic = items[topic_id]
-        keywords = extractor.get_keywords(idx, 5)
-
-        assert isinstance(topic_id, int)
-        assert 5 == len(keywords)
+        assert isinstance(extracted, Item)
+        assert isinstance(extracted.topic, int)
+        assert isinstance(extracted.keywords, list)
+        assert 32 == len(extracted.keywords)
 
 if __name__ == '__main__':
     test_extractor1()

@@ -51,7 +51,7 @@ class Cluster:
     def __cluster(self, method, metric, criterion) -> np.ndarray:
         return hcluster.fclusterdata(self._vectors, self.thresh, method=method, metric=metric, criterion=criterion)
 
-    def cluster(self, method="ward", metric="cosine", criterion="inconsistent"):
+    def cluster(self, method=settings.METHOD, metric=settings.METRIC, criterion=settings.CRITERION):
         """cluster process
             : build vocab, using repr of item
             : train items, using str of item
