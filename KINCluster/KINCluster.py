@@ -1,14 +1,22 @@
 from core.cluster import Cluster 
 from core.pipeline import Pipeline 
+from core.extractor import Extractor 
+from lib.tokenizer import tokenize
 import settings
 
-pipe = Pipeline()
-cluster = Cluster()
+class KINCluster:
+    def __init__(self, pipeline, cluster=Cluster, Extractor=Extractor):
+        self.pipeline = pipeline
+        self.cluster = Cluster()
+        self.Extractor = Extractor
 
-for item in pipe.capture_item():
-    cluster.put_item(item)
+    def run(self):
+        for item in self.pipeline.capture_item():
+            self.cluster.put_item(item)
+        self.cluster.cluster()
 
-cluster.cluster()
-
-for items in cluster.dumps():
-    pipe.dress_item(items)
+        extractor = self.Extractor(self.cluster)
+        for idx, dump in enumerate(self.cluster.dumps):
+            items, vectors = map(list, zip(*dump))
+            extracted = extractor.dump(idx)
+            self.pipeline.dress_item(extracted, items)
