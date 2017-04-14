@@ -27,7 +27,7 @@ class Pipeline(Pipeline):
             yield Item(title=text,content=content,keyword=keyword,date='')
 
 def test_extractor1():
-    cluster = Cluster(epoch=32, tokenizer=tokenize)
+    cluster = Cluster(epoch=32, tokenizer="tokenize")
     pipeline = Pipeline()
     for item in pipeline.capture_item():
         cluster.put_item(item)
@@ -43,7 +43,11 @@ def test_extractor1():
         extracted = extractor.dump(idx)
 
         assert isinstance(extracted, Item)
-        assert isinstance(extracted.topic, int)
+        assert isinstance(extracted.topic, Item)
+        assert isinstance(extracted.topic.title, str)
+        assert isinstance(extracted.topic.content, str)
+        assert isinstance(extracted.topic.keyword, str)
+        assert isinstance(extracted.topic.date, str)
         assert isinstance(extracted.keywords, list)
         assert 32 == len(extracted.keywords)
 
