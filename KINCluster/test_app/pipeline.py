@@ -1,29 +1,31 @@
 from core.pipeline import Pipeline 
 from core.item import Item
+import settings
 
 import pymysql
 
-SERVER_RDB = '175.207.13.225'
-class PipelineTest(Pipeline):
-    def __init__(self, keyword):
-        self.keyword = keyword
+class PipelineServer(Pipeline):
+    def __init__(self, start_date, end_date):
+        self.sd = start_date
+        self.ed = end_date
         
     def capture_item(self):
-        conn = pymysql.connect(host=SERVER_RDB,
-                           user='memento',
-                           password='memento@0x100_',
-                           db='memento',
-                           charset='utf8')
+        conn = pymysql.connect(host     = settings.SERVER_RDB,
+                               user     = settings.SERVER_USER,
+                               password = settings.SERVER_PASS,
+                               db       = settings.SERVER_DB,
+                               charset  = 'utf8')
         cur = conn.cursor()
 
-        columns = ['keyword', 'title', 'content', 'published_time']
+        columns = ['id', 'keyword', 'title', 'content', 'published_time', 'reply_count', 'href_naver']
 
-        sql = "SELECT " + ",".join(columns) + " FROM articles where keyword like \'" + self.keyword  +"\' limit 1000"
+        sql = "SELECT " + ",".join(columns) + " FROM articles where published_time between \'" +\
+                self.sd + "\' and \'" + self.ed +"\'"
 
         result = cur.execute(sql)
 
-        for keyword, title, content, ptime in cur:
-            yield Item(title=title,content=content,keyword=keyword,date=ptime)
+        for idx, keyword, title, content, ptime, reply_count, href_naver in cur:
+            yield Item(idx=idx,title=title,content=content,keyword=keyword,date=ptime,reply_count=reply_count,href_naver=href_naver)
 
         cur.close()
         conn.close()

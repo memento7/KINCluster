@@ -18,9 +18,9 @@ C_SIZE = 500
 # trate
 C_TRANING_RATE = 0.98
 # epoch
-C_EPOCH = 256
+C_EPOCH = 12
 # threshold, recommand between 10-1, 10+1
-C_THRESHOLD = 1.15
+C_THRESHOLD = 1.0
 
 # tokenizer = ["tokenize", "stemize"]
 # or implemeint in lib.tokenizer
@@ -37,7 +37,6 @@ ITEM_ELEMENT = [
     'date',
     'keyword'
 ]
-
 
 # Tokenizer setting
 TOKEN_POS_TAG = [

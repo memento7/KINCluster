@@ -3,8 +3,8 @@ from sys import path
 path.append(join(dirname(__file__), '..'))
 
 from KINCluster import KINCluster
-from pipeline import PipelineTest
+from pipeline import PipelineServer
 
 if __name__ == '__main__':
-    kin = KINCluster(PipelineTest('박근혜'))
+    kin = KINCluster(PipelineServer())
     kin.run()

@@ -79,7 +79,7 @@ class PipelineServer(Pipeline):
 def test_app2():
     """ Testing for cluster, using test data
     """
-    cluster = Cluster(epoch=32, tokenizer=tokenize)
+    cluster = Cluster(epoch=32, tokenizer="tokenize")
     pipe = PipelineServer('김태희')
 
     for item in pipe.capture_item():
@@ -96,6 +96,45 @@ def test_app2():
 
         print (topic)
         print (keywords)
+    print (cluster.distribution)
+
+# Test3
+import pandas as pd
+from nltk import ngrams
+test_csv = 'tests/data/test.csv'
+class Item(Item):
+    def __str__(self):
+        return " ".join(map(str, self.items))
+    def __repr__(self):
+        return " ".join(map(str, self.items))
+
+
+class PipelineCsv(Pipeline):
+    def __init__(self, csv):
+        self.frame = pd.read_csv(csv)
+    def capture_item(self):
+        for idx, row in self.frame.iterrows():
+            yield Item(title=row.title,content=row.content,keyword=row.actor,date=row.date)
+    def dress_item(self, extracted, items):
+        if len(items) < 3: return
+        print (len(items), extracted.topic.title)
+
+def test_app3():
+    """ Testing for cluster, using test data
+    """
+    cluster = Cluster(tokenizer="tokenize")
+    pipe = PipelineCsv(test_csv)
+
+    for item in pipe.capture_item():
+        cluster.put_item(item)
+    cluster.cluster()
+
+    extractor = Extractor(cluster)
+    for idx, dump in enumerate(cluster.dumps):
+        items, vectors = map(list, zip(*dump))
+        extracted = extractor.dump(idx)
+
+        pipe.dress_item(extracted, items)
     print (cluster.distribution)
 
 if __name__ == '__main__':
