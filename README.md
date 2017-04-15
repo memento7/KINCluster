@@ -2,8 +2,10 @@
 [![Pypi](https://img.shields.io/pypi/v/KINCluster.svg)](https://pypi.python.org/pypi/KINCluster)
 [![Python Versions](https://img.shields.io/pypi/pyversions/KINCluster.svg)](https://pypi.python.org/pypi/KINCluster)
 [![Build Status](https://travis-ci.org/MaybeS/KINCluster.svg?branch=master)](https://travis-ci.org/MaybeS/KINCluster)
+[![License](https://img.shields.io/badge/licence-GPL-blue.svg)](http://www.gnu.org/copyleft/gpl.html)
 
-Korean Involute News Cluster.
+Korean Involute News Cluster. 
+
 ~~KIN, 즐~~
 
 ## Feature

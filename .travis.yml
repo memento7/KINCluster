@@ -12,3 +12,7 @@ install:
 
 script:
   - python -m pytest tests
+
+notifications:
+  slack: maybestudio:Q9Nf77xsp5W70wr3LCxh2htJ
+  email: false
