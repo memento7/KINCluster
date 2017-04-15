@@ -1,6 +1,6 @@
-from core.item import Item
-import lib.tokenizer
-import settings
+from KINCluster.core.item import Item
+from KINCluster.lib import tokenizer
+from KINCluster import settings
 
 from typing import List, Iterator, Union, Any
 nparray = Any
