@@ -1,4 +1,7 @@
 # KINCluster
+[![Pypi](https://img.shields.io/pypi/v/KINCluster.svg)](https://pypi.python.org/pypi/KINCluster)
+[![Python Versions](https://img.shields.io/pypi/pyversions/KINCluster.svg)](https://pypi.python.org/pypi/KINCluster)
+[![Build Status](https://travis-ci.org/MaybeS/KINCluster.svg?branch=master)](https://travis-ci.org/MaybeS/KINCluster)
 
 Korean Involute News Cluster.
 ~~KIN, 즐~~

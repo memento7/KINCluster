@@ -1,4 +1,4 @@
-import settings
+from KINCluster import settings
 
 from typing import List, Any
 

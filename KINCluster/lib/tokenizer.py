@@ -1,17 +1,17 @@
-from lib.stopwords import stopwords
-import settings
+from KINCluster.lib.stopwords import stopwords
+from KINCluster import settings
 
 from typing import List, Union
 from itertools import chain
 import re
 
-import os
-if os.name == 'nt':
-    from konlpy.tag import Twitter
-    tagger = Twitter()
-else:
-    from konlpy.tag import Mecab
-    tagger = Mecab()
+# import os
+# if os.name == 'nt':
+from konlpy.tag import Twitter
+tagger = Twitter()
+# else:
+#     from konlpy.tag import Mecab
+#     tagger = Mecab()
 
 # type hinting
 TAG = str
@@ -26,13 +26,11 @@ class tokenizer:
             return self.func(obj, *args, **kwargs)
         return _call_
 
-stop_words = settings.STOP_WORDS
 pos_tag = settings.TOKEN_POS_TAG
 neg_tag = settings.TOKEN_NEG_TAG
 zip_tag = settings.TOKEN_ZIP_TAG
 zip_token = "**//*///**/*//*//*"
 def tokenizer_init():
-    # stop_words = []
     # pos_tag = []
     # neg_tag = []
     # zip_tag = [[]]

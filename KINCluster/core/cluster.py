@@ -1,13 +1,13 @@
-from core.item import Item
-from lib.tokenizer import tokenizer
-import settings
+from KINCluster.core.item import Item
+from KINCluster.lib.tokenizer import tokenizer
+from KINCluster import settings
 
 from typing import List, Iterator, Union, Any
 from collections import Counter
 
 import numpy as np
 from gensim.models import Doc2Vec
-from gensim.models.doc2vec import LabeledSentence
+from gensim.models.doc2vec import TaggedDocument
 from scipy.cluster import hierarchy as hcluster
 from scipy.cluster import vq as vq
 
@@ -39,15 +39,15 @@ class Cluster:
     def put_item(self, item: Item):
         self._items.append(item)
 
-    def __vocabs(self) -> Iterator[LabeledSentence]:
+    def __vocabs(self) -> Iterator[TaggedDocument]:
         for idx, item in enumerate(self._items):
             token = self.tokenizer(repr(item))
             self._counters.append(Counter(token))
-            yield LabeledSentence(token, ['line_%s' % idx])
+            yield TaggedDocument(token, ['line_%s' % idx])
 
-    def __setences(self) -> Iterator[LabeledSentence]:
+    def __documents(self) -> Iterator[TaggedDocument]:
         for idx, item in enumerate(self._items):
-            yield LabeledSentence(self.tokenizer(str(item)), ['line_%s' % idx])
+            yield TaggedDocument(self.tokenizer(str(item)), ['line_%s' % idx])
 
     def __cluster(self, method, metric, criterion) -> np.ndarray:
         return hcluster.fclusterdata(self._vectors, self.thresh, method=method, metric=metric, criterion=criterion)
@@ -60,9 +60,10 @@ class Cluster:
         """
         self.model.build_vocab(self.__vocabs())
 
+
+        documents = list(self.__documents())
         for epoch in range(self.epoch):
-            sentences = list(self.__setences())
-            self.model.train(sentences)
+            self.model.train(documents)
             self.model.alpha *= self.trate
             self.model.min_alpha = self.model.alpha
 

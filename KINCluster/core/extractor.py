@@ -1,7 +1,7 @@
-from core.item import Item
-from lib.tokenizer import stemize, tagging, is_noun
-from lib.stopwords import stopwords
-import settings
+from KINCluster.core.item import Item
+from KINCluster.lib.tokenizer import stemize, tagging, is_noun
+from KINCluster.lib.stopwords import stopwords
+from KINCluster import settings
 
 from typing import List, Union, Any
 from math import log10 as normalize

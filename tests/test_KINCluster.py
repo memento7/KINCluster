@@ -8,11 +8,11 @@
 
 import pytest
 
-from core.cluster import Cluster 
-from core.pipeline import Pipeline 
-from core.extractor import Extractor 
-from core.item import Item
-from lib.tokenizer import tokenize, stemize
+from KINCluster.core.cluster import Cluster 
+from KINCluster.core.pipeline import Pipeline 
+from KINCluster.core.extractor import Extractor 
+from KINCluster.core.item import Item
+from KINCluster.lib.tokenizer import tokenize, stemize
 
 import codecs
 
@@ -32,7 +32,7 @@ class PipelineFile(Pipeline):
 def test_app1():
     """ Testing for cluster, using test data
     """
-    cluster = Cluster(epoch=32, tokenizer=stemize)
+    cluster = Cluster(epoch=32, tokenizer="stemize")
     pipeline = PipelineFile()
 
     for item in pipeline.capture_item():
@@ -43,12 +43,11 @@ def test_app1():
     for idx, dump in enumerate(cluster.dumps):
         items, vectors = map(list, zip(*dump))
 
-        topic_id = extractor.topic(idx, '대통령')
-        topic = items[topic_id]
-        keywords = extractor.keywords(idx)
+        extracted = extractor.dump(idx)
 
-        print (keywords)
-        pipeline.dress_item(items)
+        assert isinstance(extracted.keywords, list)
+        assert isinstance(extracted.topic, Item)
+        pipeline.dress_item(extracted, items)
 
 # Test2
 import pymysql
@@ -90,12 +89,11 @@ def test_app2():
     for idx, dump in enumerate(cluster.dumps):
         items, vectors = map(list, zip(*dump))
 
-        topic_id = extractor.topic(idx, '김태희')
-        topic = items[topic_id]
-        keywords = extractor.keywords(idx, 5)
+        extracted = extractor.dump(idx)
 
-        print (topic)
-        print (keywords)
+        # assert isinstance(extracted, Item)
+
+        pipe.dress_item(extracted, items)
     print (cluster.distribution)
 
 # Test3
