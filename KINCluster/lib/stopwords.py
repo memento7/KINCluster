@@ -1,5 +1,5 @@
 
-import settings 
+from KINCluster import settings
 
 import codecs
 from itertools import chain

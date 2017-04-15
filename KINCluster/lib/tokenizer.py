@@ -1,17 +1,17 @@
-from lib.stopwords import stopwords
-import settings
+from KINCluster.lib.stopwords import stopwords
+from KINCluster import settings
 
 from typing import List, Union
 from itertools import chain
 import re
 
-import os
-if os.name == 'nt':
-    from konlpy.tag import Twitter
-    tagger = Twitter()
-else:
-    from konlpy.tag import Mecab
-    tagger = Mecab()
+# import os
+# if os.name == 'nt':
+from konlpy.tag import Twitter
+tagger = Twitter()
+# else:
+#     from konlpy.tag import Mecab
+#     tagger = Mecab()
 
 # type hinting
 TAG = str
