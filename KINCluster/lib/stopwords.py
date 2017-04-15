@@ -13,4 +13,4 @@ def __get_stopwords():
         for word in codecs.open(join(stopwords_dir, file_name), "r", "utf-8").readlines():
             words.add(word)
     return map(lambda x: x.strip(), words)
-stopwords = __get_stopwords()
+stopwords = list(__get_stopwords())
