@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.org/MaybeS/KINCluster.svg?branch=master)](https://travis-ci.org/MaybeS/KINCluster)
 [![License](https://img.shields.io/badge/licence-GPL-blue.svg)](http://www.gnu.org/copyleft/gpl.html)
 
-
 Korean Involute News Cluster. 
 
 ~~KIN, 즐~~
