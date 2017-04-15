@@ -5,7 +5,7 @@ python:
 
 before_install:
   - sudo apt-get install g++ openjdk-7-jdk python-dev python3-dev
-
+  - pip install google-compute-engine
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
