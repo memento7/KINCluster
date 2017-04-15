@@ -6,6 +6,9 @@ python:
 before_install:
   - sudo apt-get install g++ openjdk-7-jdk python-dev python3-dev
   - pip install boto==2.38.0
+  - pip install pymysql
+  - pip install pandas
+  - pip install nltk
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt

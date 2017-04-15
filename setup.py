@@ -19,7 +19,7 @@ setup(
     keywords = ['KINCluster', 'cluster', 'documents' 'doc2vec', 'tokenize', 'korean'],
 
     install_requires=[
-        'gensim>=0.13.4.1',
+        'gensim==0.13.4.1',
         'konlpy>=0.4.4',
         'scipy>=0.19.0',
         'numpy>=1.12.1+mkl'
