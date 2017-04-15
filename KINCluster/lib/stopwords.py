@@ -7,8 +7,7 @@ from os import listdir
 from os.path import join, dirname, abspath
 
 def __get_stopwords():
-    path = abspath(__file__)
-    stopwords_dir = join(dirname(__file__), 'stopwords')
+    stopwords_dir = join('KINCluster', 'lib', 'stopwords')
     words = set()
     for file_name in listdir(stopwords_dir):
         for word in codecs.open(join(stopwords_dir, file_name), "r", "utf-8").readlines():

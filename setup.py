@@ -8,10 +8,10 @@ from KINCluster import __version__
 setup(
     name = 'KINCluster',
     packages = ['KINCluster' ,'KINCluster/core', 'KINCluster/lib'],
+    include_package_data=True,
     version = __version__,
     description = 'Korean Involute News Cluster',
     license = 'MIT',
-
     author = 'Bae jiun',
     author_email = 'alice.maydev@gmail.com',
     
