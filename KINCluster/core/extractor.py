@@ -5,7 +5,7 @@ from KINCluster import settings
 
 from typing import List, Union, Any
 from math import log10 as normalize
-from collections import Counter
+from collections import Counter, OrderedDict
 from itertools import chain
 from functools import reduce
 import re
@@ -18,7 +18,12 @@ wID = str # word id, it str cuz word counter, {word: count}
 import numpy as np
 
 class extractable:
-    s = {}
+    """extractable is decorater for extractor, which extract something.
+
+extractor.dump() return all result of extractable.
+extractable function must have argument(iid: itemID)
+    """
+    s = OrderedDict()
     def __init__(self, func):
         extractable.s[func.__name__] = func
         self.func = func
@@ -27,7 +32,25 @@ class extractable:
             return self.func(obj, *args, **kwargs)
         return _call_
 
+    @staticmethod
+    def help():
+        print ('extractable', 'help')
+        for f in extractable.s.values():
+            print (f.__name__, f.__doc__)
+
 class Extractor:
+    """Extractor is extract feature from cluster
+
+Usage:
+    Extractor(cluster[, tokenizer])
+    
+    dump extract all of extractable feature as dict.
+
+Default extractable:
+    topic       : extract mean of cluster
+    keywords    : extract keywords from cluster
+    quotation   : extract quotations from cluster
+    """
     def __init__(self, cluster, tokenizer=stemize, notword='[^a-zA-Z가-힣0-9]'):
         self.tokenizer = tokenizer
         self.not_word = re.compile(notword)
@@ -59,7 +82,10 @@ class Extractor:
 
     @extractable
     def topic(self, iid: itemID) -> Item:
-        """topic
+        """
+        extract topic
+
+        return Item that center of cluster
         """
         items, vectors = map(list, zip(*self.__c.dumps[iid]))
         _, index = Extractor.__find_center(vectors)
@@ -67,7 +93,11 @@ class Extractor:
 
     @extractable
     def keywords(self, iid: itemID, top: int = 32) -> List[str]:
-        """keywords
+        """
+        extract keywords
+        [optional argument top=32 for count of keywords]
+
+        return keywords in cluster
         """
         items, vectors = map(list, zip(*self.__c.dumps[iid]))
         mean, index = Extractor.__find_center(vectors)
@@ -88,6 +118,7 @@ class Extractor:
 
     @extractable
     def quotation(self, iid: itemID) -> List[str]:
-        """quotation
+        """
+        extract quotation
         """
         pass
