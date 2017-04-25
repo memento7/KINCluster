@@ -1,1 +1,4 @@
 pytest
+pymysql
+pandas
+nltk
