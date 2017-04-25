@@ -50,6 +50,3 @@ def test_extractor1():
         assert isinstance(extracted.topic.date, str)
         assert isinstance(extracted.keywords, list)
         assert 32 == len(extracted.keywords)
-
-if __name__ == '__main__':
-    test_extractor1()

@@ -87,6 +87,3 @@ def test_app3():
 
         pipe.dress_item(extracted, items)
     print (cluster.distribution)
-
-if __name__ == '__main__':
-    test_app2()
