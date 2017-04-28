@@ -61,6 +61,8 @@ def is_noun(word):
 def tokenize(text) -> List[str]:
     return [word for word in text.split() if not word in stopwords]
 
+# konlpy custom dic 써보기 
+# 
 @tokenizer
 def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> List[str]:
     def extract_quotations(text) -> Union[List[str], str]:

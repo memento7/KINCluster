@@ -23,10 +23,11 @@ class extractable:
 extractor.dump() return all result of extractable.
 extractable function must have argument(iid: itemID)
     """
-    s = OrderedDict()
+    s = {}
     def __init__(self, func):
         extractable.s[func.__name__] = func
         self.func = func
+
     def __get__(self, obj, klass=None):
         def _call_(*args, **kwargs):
             return self.func(obj, *args, **kwargs)
@@ -34,6 +35,8 @@ extractable function must have argument(iid: itemID)
 
     @staticmethod
     def help():
+        """print extractable function documents
+        """
         print ('extractable', 'help')
         for f in extractable.s.values():
             print (f.__name__, f.__doc__)
@@ -47,17 +50,14 @@ Usage:
     dump extract all of extractable feature as dict.
 
 Default extractable:
-    topic       : extract mean of cluster
-    keywords    : extract keywords from cluster
-    quotation   : extract quotations from cluster
+    items       : items of clustered dump
+    vectors     : vectors of clustered dump
+    counter     : counter(split by tokenizer) of clustered dump
     """
     def __init__(self, cluster, tokenizer=stemize, notword='[^a-zA-Z가-힣0-9]'):
         self.tokenizer = tokenizer
         self.not_word = re.compile(notword)
         self.__c = cluster
-        self._words = Counter()
-        for word, obj in self.__c.vocab.items():
-            self._words[word] = obj.count
 
     @staticmethod
     def __find_center(vectors: np.ndarray) -> int:
@@ -78,30 +78,41 @@ Default extractable:
         return counter
 
     def dump(self, iid: itemID) -> Item:
-        return Item(**{e: f(self, iid) for e, f in extractable.s.items()})
+        items, vectors, counter = map(list, zip(*self.__c.dumps[iid]))
+        return Item(**{e: f(self, items, vectors, counter) for e, f in extractable.s.items()})
 
     @extractable
-    def topic(self, iid: itemID) -> Item:
+    def item_dump(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> List[Item]:
+        return items
+
+    @extractable
+    def vectors(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> np.ndarray:
+        return vectors
+
+    @extractable
+    def counter(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> Counter:
+        return reduce(lambda x,y: x+y, counters)
+
+    @extractable
+    def center(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> int:
         """
         extract topic
 
         return Item that center of cluster
         """
-        items, vectors = map(list, zip(*self.__c.dumps[iid]))
         _, index = Extractor.__find_center(vectors)
-        return items[index]
+        return index
 
     @extractable
-    def keywords(self, iid: itemID, top: int = 32) -> List[str]:
+    def keywords(self, items: List[Item], vectors: np.ndarray, counters: List[Counter], top: int = 32) -> List[str]:
         """
         extract keywords
         [optional argument top=32 for count of keywords]
 
         return keywords in cluster
         """
-        items, vectors = map(list, zip(*self.__c.dumps[iid]))
         mean, index = Extractor.__find_center(vectors)
-        counter = self.__c.vocab_count[iid]
+        counter = self.counter(items, vectors, counters)
 
         def _get_f(t: wID) -> float:
             return float(counter[t])
@@ -109,16 +120,9 @@ Default extractable:
             max_f = max([_get_f(w) for w in counter.keys() ])
             return .5 + (.5 * _get_f(t) / max_f)
         def _get_idf(t: wID) -> float:
-            return 0.01 + normalize(len(self.__c.items)/len(self.__c.dumps[iid]))
+            return 0.01 + normalize(len(self.__c.items)/len(vectors))
         def _get_score(t: wID) -> float:
             return _get_tf(t) * _get_idf(t) + _get_f(t) * 0.001
 
         words = [(w, _get_score(w)) for w in filter(lambda x: is_noun(x),counter.keys())]
         return sorted(words, key=lambda w: -float(w[1]))[:top]
-
-    @extractable
-    def quotation(self, iid: itemID) -> List[str]:
-        """
-        extract quotation
-        """
-        pass

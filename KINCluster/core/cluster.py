@@ -53,13 +53,14 @@ class Cluster:
         return hcluster.fclusterdata(self._vectors, self.thresh, method=method, metric=metric, criterion=criterion)
 
     def cluster(self, method=settings.C_METHOD, metric=settings.C_METRIC, criterion=settings.C_CRITERION):
+        # COMMENT: Top keyword 만 잘라서 분류해보기
+        # 
         """cluster process
             : build vocab, using repr of item
             : train items, using str of item
             : get _vectors and _clusters
         """
         self.model.build_vocab(self.__vocabs())
-
 
         documents = list(self.__documents())
         for epoch in range(self.epoch):
@@ -71,8 +72,8 @@ class Cluster:
         self._clusters = self.__cluster(method, metric, criterion)
 
         dumps = {c: [] for c in self.unique}
-        for c, item, vector in zip(self._clusters,self._items,self._vectors):
-            dumps[c].append((item, vector))
+        for c, item, vector, counter in zip(self._clusters, self._items, self._vectors, self._counters):
+            dumps[c].append((item, vector, counter))
         self._dumps = list(dumps.values())
 
     def similar(self, pos, neg=[], top=10):

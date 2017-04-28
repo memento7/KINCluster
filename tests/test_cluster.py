@@ -45,7 +45,7 @@ def test_cluster1() :
     assert len(cluster.unique) == len(cluster.dumps)
 
     for dump in cluster.dumps:
-        items, vectors = zip(*dump)
+        items, vectors, counter = zip(*dump)
 
         for item in items:
             assert isinstance(item, Item)
