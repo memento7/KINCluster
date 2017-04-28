@@ -1,10 +1,12 @@
 from KINCluster import settings
 
+from collections import OrderedDict
+
 from typing import List, Any
 
 class Item:
     def __init__(self, **kwargs):
-        self._element = {}
+        self._element = OrderedDict()
         for k, v in kwargs.items():
             setattr(self, k, v)
             self._element[k] = v
@@ -27,10 +29,10 @@ class Item:
 
     @property
     def items(self) -> List[Any]:
-        return [self._element[k] for k in self.keys]
+        return self._element.values()
 
     @property
     def keys(self) -> List[str]:
         """ return sorted element keys
         """
-        return sorted(self._element.keys())
+        return self._element.keys()
