@@ -41,12 +41,11 @@ def test_app1():
 
     extractor = Extractor(cluster)
     for idx, dump in enumerate(cluster.dumps):
-        items, vectors = map(list, zip(*dump))
+        items, vectors, counter = map(list, zip(*dump))
 
         extracted = extractor.dump(idx)
 
         assert isinstance(extracted.keywords, list)
-        assert isinstance(extracted.topic, Item)
         pipeline.dress_item(extracted, items)
 
 # Test3
@@ -68,7 +67,6 @@ class PipelineCsv(Pipeline):
             yield Item(title=row.title,content=row.content,keyword=row.actor,date=row.date)
     def dress_item(self, extracted, items):
         if len(items) < 3: return
-        print (len(items), extracted.topic.title)
 
 def test_app3():
     """ Testing for cluster, using test data
@@ -82,7 +80,7 @@ def test_app3():
 
     extractor = Extractor(cluster)
     for idx, dump in enumerate(cluster.dumps):
-        items, vectors = map(list, zip(*dump))
+        items, vectors, counter = map(list, zip(*dump))
         extracted = extractor.dump(idx)
 
         pipe.dress_item(extracted, items)
