@@ -16,10 +16,12 @@ class Pipeline:
         raise Exception('Override capture_item function to generator<Item>')
         pass
 
-    def dress_item(self, item: Item, items: List[Item]):
+    def dress_item(self, item: Item):
         """dress item
             :item (has element extractable)
-            :items (clustered items)
+                - items     : cluster items
+                - vectors   : cluster vectors
+                - counter   : cluster counter
         """
         pass
 

@@ -6,10 +6,16 @@ from typing import List, Any
 
 class Item:
     def __init__(self, **kwargs):
-        self._element = OrderedDict()
+        """item elements is ordered dict
+        why?: str and repr must return same value always
+        """
+        self.__e = OrderedDict()
         for k, v in kwargs.items():
-            setattr(self, k, v)
-            self._element[k] = v
+            try:
+                setattr(self, k, v)
+            except:
+                raise "do not use item key like 'keys', 'items' or dumplicated key"
+            self.__e[k] = v
 
     def __str__(self) -> str:
         """represent text to clustering
@@ -24,15 +30,17 @@ class Item:
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-           return other._element == self._element
+           return other.__e == self.__e
         return False 
 
     @property
-    def items(self) -> List[Any]:
-        return self._element.values()
+    def values(self) -> List[Any]:
+        """ return element values
+        """
+        return self.__e.values()
 
     @property
-    def keys(self) -> List[str]:
-        """ return sorted element keys
+    def keys(self) -> List[Any]:
+        """ return element keys
         """
-        return self._element.keys()
+        return self.__e.keys()
