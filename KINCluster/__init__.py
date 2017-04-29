@@ -1,9 +1,12 @@
 """
 KINCluster is clustering like KIN.
 
-
-
 release note: 
+- version 0.1.5.2
+    change item, extractor, pipeline module
+    now, pipeline.dress_item pass just item(extractor.dump)
+    fix prev versions error (too many value to unpack)
+
 - version 0.1.5.1
     rebase module, just import KINCluster
     simplify extractor module
@@ -12,7 +15,7 @@ release note:
     First release
 """
 
-__version__ = '0.1.5.1'
+__version__ = '0.1.5.2'
 
 __all__ = ['KINCluster', 
 'Cluster', 'Extractor', 'Item', 'Pipeline', 
