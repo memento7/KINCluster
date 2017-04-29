@@ -21,12 +21,12 @@ class Item:
         """represent text to clustering
             :apply n-gram or stemize if you need
         """
-        return " ".join(map(str, self.items))
+        return " ".join(map(str, self.values))
 
     def __repr__(self) -> str:
         """represent vocabs in item
         """
-        return " ".join(map(str, self.items))
+        return " ".join(map(str, self.values))
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
