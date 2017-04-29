@@ -19,5 +19,5 @@ def test_item1() :
     item = Item(value="val", string="str", integer="int")
 
     # assert str(item) == "int str val"
-    assert set(item.items) == {'int', 'str', 'val'}
+    assert set(item.values) == {'int', 'str', 'val'}
     assert set(item.keys) == {'integer', 'string', 'value'}
