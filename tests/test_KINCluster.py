@@ -46,18 +46,12 @@ def test_app1():
         extracted = extractor.dump(idx)
 
         assert isinstance(extracted.keywords, list)
-        pipeline.dress_item(extracted, items)
+        pipeline.dress_item(extracted)
 
 # Test3
 import pandas as pd
 from nltk import ngrams
 test_csv = 'tests/data/test.csv'
-class Item(Item):
-    def __str__(self):
-        return " ".join(map(str, self.items))
-    def __repr__(self):
-        return " ".join(map(str, self.items))
-
 
 class PipelineCsv(Pipeline):
     def __init__(self, csv):
@@ -65,8 +59,8 @@ class PipelineCsv(Pipeline):
     def capture_item(self):
         for idx, row in self.frame.iterrows():
             yield Item(title=row.title,content=row.content,keyword=row.actor,date=row.date)
-    def dress_item(self, extracted, items):
-        if len(items) < 3: return
+    def dress_item(self, extracted):
+        pass
 
 def test_app3():
     """ Testing for cluster, using test data
@@ -83,5 +77,5 @@ def test_app3():
         items, vectors, counter = map(list, zip(*dump))
         extracted = extractor.dump(idx)
 
-        pipe.dress_item(extracted, items)
+        pipe.dress_item(extracted)
     print (cluster.distribution)

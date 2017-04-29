@@ -17,6 +17,5 @@ class KINCluster:
 
         extractor = self.Extractor(self.cluster)
         for idx, dump in enumerate(self.cluster.dumps):
-            items, vectors = map(list, zip(*dump))
-            extracted = extractor.dump(idx)
-            self.pipeline.dress_item(extracted, items)
+            ext = extractor.dump(idx)
+            self.pipeline.dress_item(ext)

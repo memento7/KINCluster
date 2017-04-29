@@ -38,7 +38,7 @@ def test_extractor1():
     for idx, dump in enumerate(cluster.dumps):
         items, vectors, counter = map(list, zip(*dump))
         
-        assert set(['item_dump', 'vectors', 'counter', 'center', 'keywords']) == set(extractable.s.keys())
+        assert set(['items', 'vectors', 'counter', 'center', 'keywords']) == set(extractable.s.keys())
         
         extracted = extractor.dump(idx)
 

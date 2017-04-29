@@ -53,6 +53,7 @@ Default extractable:
     items       : items of clustered dump
     vectors     : vectors of clustered dump
     counter     : counter(split by tokenizer) of clustered dump
+    center      : return center of vectors, (using np.mean)
     """
     def __init__(self, cluster, tokenizer=stemize, notword='[^a-zA-Z가-힣0-9]'):
         self.tokenizer = tokenizer
@@ -82,7 +83,7 @@ Default extractable:
         return Item(**{e: f(self, items, vectors, counter) for e, f in extractable.s.items()})
 
     @extractable
-    def item_dump(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> List[Item]:
+    def items(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> List[Item]:
         return items
 
     @extractable
