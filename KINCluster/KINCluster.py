@@ -5,9 +5,9 @@ from KINCluster.lib.tokenizer import tokenize
 from KINCluster import settings
 
 class KINCluster:
-    def __init__(self, pipeline, cluster=Cluster, Extractor=Extractor):
+    def __init__(self, pipeline, cluster=Cluster, Extractor=Extractor, settings=settings):
         self.pipeline = pipeline
-        self.cluster = Cluster()
+        self.cluster = Cluster(settings=settings)
         self.Extractor = Extractor
 
     def run(self):

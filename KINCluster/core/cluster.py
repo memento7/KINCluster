@@ -20,13 +20,14 @@ class Cluster:
             :size = vector size
             :tokenizer = lambda document: str -> list or words: List[str]
         """
-        alpha = kwargs.get("alpha", settings.C_LEARNING_RATE)
-        min_alpha = kwargs.get("min_alpha", settings.C_LEARNING_RATE_MIN)
-        window = kwargs.get("window", settings.C_WINDOW)
-        size = kwargs.get("size", settings.C_SIZE)
-        self.trate = kwargs.get("trate", settings.C_TRANING_RATE)
-        self.epoch = kwargs.get("epoch", settings.C_EPOCH)
-        self.thresh = kwargs.get("thresh", settings.C_THRESHOLD)
+        self.settings = kwargs.get('settings', settings)
+        alpha = kwargs.get("alpha", self.settings.C_LEARNING_RATE)
+        min_alpha = kwargs.get("min_alpha", self.settings.C_LEARNING_RATE_MIN)
+        window = kwargs.get("window", self.settings.C_WINDOW)
+        size = kwargs.get("size", self.settings.C_SIZE)
+        self.trate = kwargs.get("trate", self.settings.C_TRANING_RATE)
+        self.epoch = kwargs.get("epoch", self.settings.C_EPOCH)
+        self.thresh = kwargs.get("thresh", self.settings.C_THRESHOLD)
         self.tokenizer = tokenizer.s[kwargs.get("tokenizer", settings.C_TOKENIZER)]
 
         self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window, size=size)
@@ -52,7 +53,7 @@ class Cluster:
     def __cluster(self, method, metric, criterion) -> np.ndarray:
         return hcluster.fclusterdata(self._vectors, self.thresh, method=method, metric=metric, criterion=criterion)
 
-    def cluster(self, method=settings.C_METHOD, metric=settings.C_METRIC, criterion=settings.C_CRITERION):
+    def cluster(self):
         # COMMENT: Top keyword 만 잘라서 분류해보기
         # 
         """cluster process
@@ -69,7 +70,7 @@ class Cluster:
             self.model.min_alpha = self.model.alpha
 
         self._vectors = np.array(self.model.docvecs)
-        self._clusters = self.__cluster(method, metric, criterion)
+        self._clusters = self.__cluster(self.settings.C_METHOD, self.settings.C_METRIC, self.settings.C_CRITERION)
 
         dumps = {c: [] for c in self.unique}
         for c, item, vector, counter in zip(self._clusters, self._items, self._vectors, self._counters):

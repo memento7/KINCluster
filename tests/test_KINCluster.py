@@ -14,6 +14,7 @@ from KINCluster.core.extractor import Extractor
 from KINCluster.core.item import Item
 from KINCluster.lib.tokenizer import tokenize, stemize
 
+from tests import settings
 import codecs
 
 test_text = ['2016헌나1.txt', '2014헌나1.txt']
@@ -32,7 +33,7 @@ class PipelineFile(Pipeline):
 def test_app1():
     """ Testing for cluster, using test data
     """
-    cluster = Cluster(epoch=32, tokenizer="stemize")
+    cluster = Cluster(epoch=32, tokenizer="stemize", settings=settings)
     pipeline = PipelineFile()
 
     for item in pipeline.capture_item():
