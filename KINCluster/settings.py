@@ -1,34 +1,34 @@
 # Cluster settings
 
 ### Methods = ["linkage", "single", "complete", "average", "weighted", "centroid", "median", "ward"]
-C_METHOD="ward"
+METHOD="ward"
 ### Metrics = ["euclidean", "minkowski", "cityblock", "seuclidean", "sqeuclidean", "cosine", "correlation", "hamming", "jaccard", "chebyshev"]
-C_METRIC="cosine"
+METRIC="cosine"
 ### Criterions = ["inconsistent", "distance", "maxclust", "monocrit", "maxclust_monocrit"]
-C_CRITERION="inconsistent"
+CRITERION="inconsistent"
 
 # alpha
-C_LEARNING_RATE = 0.025
+LEARNING_RATE = 0.025
 # min_alpha
-C_LEARNING_RATE_MIN = 0.025
+LEARNING_RATE_MIN = 0.025
 # window
-C_WINDOW = 5
+WINDOW = 5
 # size
-C_SIZE = 500
+SIZE = 500
 # trate
-C_TRANING_RATE = 0.98
+TRANING_RATE = 0.98
 # epoch
-C_EPOCH = 256
+EPOCH = 256
 # threshold, recommand between 10-1, 10+1
-C_THRESHOLD = 1.15
+THRESHOLD = 1.15
 
 # tokenizer = ["tokenize", "stemize"]
 # or implemeint in lib.tokenizer
-C_TOKENIZER = "tokenize"
+TOKENIZER = "tokenize"
 
 # Cluster type
 ## for now, only hcluster
-C_TYPE = "hcluster"
+CLUSTER = "hcluster"
 
 # item element setting
 ITEM_ELEMENT = [

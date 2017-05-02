@@ -2,12 +2,26 @@ from KINCluster.core.cluster import Cluster
 from KINCluster.core.pipeline import Pipeline 
 from KINCluster.core.extractor import Extractor 
 from KINCluster.lib.tokenizer import tokenize
-from KINCluster import settings
+from KINCluster import settings as sets
+
+from types import ModuleType
 
 class KINCluster:
-    def __init__(self, pipeline, cluster=Cluster, Extractor=Extractor, settings=settings):
+    def __init__(self, pipeline, cluster=Cluster, Extractor=Extractor, settings={}):
+        def getattrs(module):
+            keys = [k for k in dir(module) if not k.startswith('__')]
+            return { key: getattr(module, key) for key in keys }
+
+        self.settings = getattrs(sets)
+
+        if isinstance(settings, ModuleType):
+            settings = getattrs(settings)
+        if isinstance(settings, dict):
+            for k, v in settings.items():
+                self.settings[k] = v
+
         self.pipeline = pipeline
-        self.cluster = Cluster(settings=settings)
+        self.cluster = Cluster(settings=self.settings)
         self.Extractor = Extractor
 
     def run(self):

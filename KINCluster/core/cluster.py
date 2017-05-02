@@ -20,15 +20,22 @@ class Cluster:
             :size = vector size
             :tokenizer = lambda document: str -> list or words: List[str]
         """
-        self.settings = kwargs.get('settings', settings)
-        alpha = kwargs.get("alpha", self.settings.C_LEARNING_RATE)
-        min_alpha = kwargs.get("min_alpha", self.settings.C_LEARNING_RATE_MIN)
-        window = kwargs.get("window", self.settings.C_WINDOW)
-        size = kwargs.get("size", self.settings.C_SIZE)
-        self.trate = kwargs.get("trate", self.settings.C_TRANING_RATE)
-        self.epoch = kwargs.get("epoch", self.settings.C_EPOCH)
-        self.thresh = kwargs.get("thresh", self.settings.C_THRESHOLD)
-        self.tokenizer = tokenizer.s[kwargs.get("tokenizer", settings.C_TOKENIZER)]
+        def getattrs(module):
+            keys = [k for k in dir(module) if not k.startswith('__')]
+            return { key: getattr(module, key) for key in keys }
+
+        if not 'settings' in kwargs:
+            self.settings = getattrs(settings)
+        else:
+            self.settings = kwargs['settings']
+        alpha = kwargs.get("alpha", self.settings['LEARNING_RATE'])
+        min_alpha = kwargs.get("min_alpha", self.settings['LEARNING_RATE_MIN'])
+        window = kwargs.get("window", self.settings['WINDOW'])
+        size = kwargs.get("size", self.settings['SIZE'])
+        self.trate = kwargs.get("trate", self.settings['TRANING_RATE'])
+        self.epoch = kwargs.get("epoch", self.settings['EPOCH'])
+        self.thresh = kwargs.get("thresh", self.settings['THRESHOLD'])
+        self.tokenizer = tokenizer.s[kwargs.get("tokenizer", self.settings['TOKENIZER'])]
 
         self.model = Doc2Vec(alpha=alpha, min_alpha=min_alpha, window=window, size=size)
         self._items = []
@@ -70,7 +77,7 @@ class Cluster:
             self.model.min_alpha = self.model.alpha
 
         self._vectors = np.array(self.model.docvecs)
-        self._clusters = self.__cluster(self.settings.C_METHOD, self.settings.C_METRIC, self.settings.C_CRITERION)
+        self._clusters = self.__cluster(self.settings['METHOD'], self.settings['METRIC'], self.settings['CRITERION'])
 
         dumps = {c: [] for c in self.unique}
         for c, item, vector, counter in zip(self._clusters, self._items, self._vectors, self._counters):

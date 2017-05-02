@@ -2,6 +2,13 @@
 KINCluster is clustering like KIN.
 
 release note: 
+- version 0.1.5.5
+    fix using custom settings
+    support both moudle and dict
+
+- version 0.1.5.4
+    Update tokenizer, remove stopwords eff
+
 - version 0.1.5.3
     now custom setting available.
     see settings.py
@@ -10,16 +17,9 @@ release note:
     change item, extractor, pipeline module
     now, pipeline.dress_item pass just item(extractor.dump)
     fix prev versions error (too many value to unpack)
-
-- version 0.1.5.1
-    rebase module, just import KINCluster
-    simplify extractor module
-
-- version 0.1.4.5
-    First release
 """
 
-__version__ = '0.1.5.3'
+__version__ = '0.1.5.5'
 
 __all__ = ['KINCluster', 
 'Cluster', 'Extractor', 'Item', 'Pipeline', 
@@ -32,5 +32,5 @@ from KINCluster.core.extractor import Extractor
 from KINCluster.core.item import Item 
 from KINCluster.core.pipeline import Pipeline 
 
-from KINCluster.lib.tokenizer import tokenizer
-from KINCluster.lib.stopwords import stopwords
+from KINCluster.lib.tokenizer import tokenizer 
+from KINCluster.lib.stopwords import stopwords 
