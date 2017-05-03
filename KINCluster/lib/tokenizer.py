@@ -90,10 +90,8 @@ def is_noun(word):
     w, t = tagging(word)[0]
     return t[0] == 'N'
 
-stopworddict = {words: "" for words in stopwords}
 @tokenizer
 def tokenize(text) -> List[str]:
-    text = text_filter(text, stopworddict)
     return [word for word in text.split() if not word in stopwords]
 
 # konlpy custom dic 써보기 
