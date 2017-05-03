@@ -79,8 +79,8 @@ Default extractable:
         return counter
 
     def dump(self, iid: itemID) -> Item:
-        items, vectors, counter = map(list, zip(*self.__c.dumps[iid]))
-        return Item(**{e: f(self, items, vectors, counter) for e, f in extractable.s.items()})
+        items, vectors, counters = map(list, zip(*self.__c.dumps[iid]))
+        return Item(**{e: f(self, items, vectors, counters) for e, f in extractable.s.items()})
 
     @extractable
     def items(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> List[Item]:

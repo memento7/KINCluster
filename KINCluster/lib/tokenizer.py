@@ -45,6 +45,39 @@ def filter_tag(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_ta
     else:
         return " ".join([w for w, t in tagging(text) if t in pos_tag])
 
+def trans_filter(text: str, pattern: dict) -> str:
+    """trans_filter filtering text by pattern key to value
+    only len(key) == 1
+    faster than replace_filter
+    just use text_filter
+    """
+    return text.translate(str.maketrans(pattern))
+
+def replace_filter(text: str, pattern: dict) -> str:
+    """replace_filter filtering text by pattern key to value
+    slower than trans_filter
+    just use text_filter
+    """
+    for pat, rep in pattern.items():
+        text = text.replace(pat, rep)
+    return text
+
+def text_filter(text: str, pattern: dict) -> str:
+    """text_filter filtering text by pattern key to value
+    split pattern trans(len = 1), replace(else) and
+    call trans_filter, replace_filter
+    """
+    trans = {}
+    replace = {}
+    for k, v in pattern.items():
+        if len(k) == 1:
+            trans[k] = v
+        else:
+            replace[k] = v
+    text = trans_filter(text, trans)
+    text = replace_filter(text, replace)
+    return text
+
 # find quotation for 'important word'
 pat_small_quot = re.compile(u"\'(.+?)\'")
 pat_double_quot = re.compile(u"\"(.+?)\"")
