@@ -1,10 +1,6 @@
-
-from KINCluster import settings
-
 import codecs
-from itertools import chain
 from os import listdir
-from os.path import join, dirname, abspath
+from os.path import join, dirname
 
 def __get_stopwords():
     stopwords_dir = join(dirname(__file__), 'stopwords')

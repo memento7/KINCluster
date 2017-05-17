@@ -1,21 +1,21 @@
-from KINCluster.core.item import Item
-from KINCluster.lib.tokenizer import stemize, tagging, is_noun
-from KINCluster.lib.stopwords import stopwords
-from KINCluster import settings
-
-from typing import List, Union, Any
+from typing import List, Union
 from math import log10 as normalize
-from collections import Counter, OrderedDict
+from collections import Counter
 from itertools import chain
 from functools import reduce
 import re
+
+from KINCluster.core.item import Item
+from KINCluster.lib.tokenizer import stemize, is_noun
+from KINCluster.lib.stopwords import stopwords
+
+import numpy as np
 
 # type hinting
 itemID = int # item id
 dID = int # document id
 wID = str # word id, it str cuz word counter, {word: count}
 
-import numpy as np
 
 class extractable:
     """extractable is decorater for extractor, which extract something.
@@ -37,16 +37,15 @@ extractable function must have argument(iid: itemID)
     def help():
         """print extractable function documents
         """
-        print ('extractable', 'help')
+        print('extractable help')
         for f in extractable.s.values():
-            print (f.__name__, f.__doc__)
+            print(f.__name__, f.__doc__)
 
 class Extractor:
     """Extractor is extract feature from cluster
 
 Usage:
     Extractor(cluster[, tokenizer])
-    
     dump extract all of extractable feature as dict.
 
 Default extractable:
@@ -63,18 +62,18 @@ Default extractable:
     @staticmethod
     def __find_center(vectors: np.ndarray) -> int:
         if isinstance(vectors, list):
-            h = len(vectors)
-            w = len(list(chain.from_iterable(vectors))) / h
+            height = len(vectors)
+            width = len(list(chain.from_iterable(vectors))) / height
         else:
-            h, w = vectors.shape
+            height, width = vectors.shape
         mean = np.mean(vectors)
-        return mean, int(np.abs(vectors - mean).argmin() / w)
+        return mean, int(np.abs(vectors - mean).argmin() / width)
 
     def __get_word_count(self, items: List[Item]) -> Union[set, List[Counter]]:
         counter = Counter()
-        for idx, item in enumerate(items):
+        for item in items:
             for word in self.tokenizer(repr(item)):
-                if not word in stopwords() and not self.not_word.search(word):
+                if not word in stopwords and not self.not_word.search(word):
                     counter[word] += 1
         return counter
 
@@ -92,7 +91,7 @@ Default extractable:
 
     @extractable
     def counter(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> Counter:
-        return reduce(lambda x,y: x+y, counters)
+        return reduce(lambda x, y: x + y, counters)
 
     @extractable
     def center(self, items: List[Item], vectors: np.ndarray, counters: List[Counter]) -> int:
@@ -112,18 +111,17 @@ Default extractable:
 
         return keywords in cluster
         """
-        mean, index = Extractor.__find_center(vectors)
         counter = self.counter(items, vectors, counters)
 
         def _get_f(t: wID) -> float:
             return float(counter[t])
         def _get_tf(t: wID) -> float:
-            max_f = max([_get_f(w) for w in counter.keys() ])
+            max_f = max([_get_f(w) for w in counter.keys()])
             return .5 + (.5 * _get_f(t) / max_f)
-        def _get_idf(t: wID) -> float:
+        def _get_idf() -> float:
             return 0.01 + normalize(len(self.__c.items)/len(vectors))
         def _get_score(t: wID) -> float:
-            return _get_tf(t) * _get_idf(t) + _get_f(t) * 0.001
+            return _get_tf(t) * _get_idf() + _get_f(t) * 0.001
 
-        words = [(w, _get_score(w)) for w in filter(lambda x: is_noun(x),counter.keys())]
+        words = [(w, _get_score(w)) for w in filter(is_noun, counter.keys())]
         return sorted(words, key=lambda w: -float(w[1]))[:top]

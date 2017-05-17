@@ -1,17 +1,12 @@
-from KINCluster.lib.stopwords import stopwords
-from KINCluster import settings
-
 from typing import List, Union
 from itertools import chain
 import re
 
-# import os
-# if os.name == 'nt':
+from KINCluster.lib.stopwords import stopwords
+from KINCluster import settings
+
 from konlpy.tag import Twitter
 tagger = Twitter()
-# else:
-#     from konlpy.tag import Mecab
-#     tagger = Mecab()
 
 # type hinting
 TAG = str
@@ -37,13 +32,12 @@ def tokenizer_init():
     # zip_token = ""
     pass
 
-def filter_tag(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> str:
+def filter_tag(text, pos_tag: List[TAG] = pos_tag, neg_tag: List[TAG] = neg_tag) -> str:
     # negative filter
     if not pos_tag:
         return " ".join([w for w, t in tagging(text) if not t in neg_tag])
     # positive fileter
-    else:
-        return " ".join([w for w, t in tagging(text) if t in pos_tag])
+    return " ".join([w for w, t in tagging(text) if t in pos_tag])
 
 def trans_filter(text: str, pattern: dict) -> str:
     """trans_filter filtering text by pattern key to value
@@ -67,13 +61,12 @@ def text_filter(text: str, pattern: dict) -> str:
     split pattern trans(len = 1), replace(else) and
     call trans_filter, replace_filter
     """
-    trans = {}
-    replace = {}
-    for k, v in pattern.items():
-        if len(k) == 1:
-            trans[k] = v
+    trans, replace = {}, {}
+    for key, value in pattern.items():
+        if len(key) == 1:
+            trans[key] = value
         else:
-            replace[k] = v
+            replace[key] = value
     text = trans_filter(text, trans)
     text = replace_filter(text, replace)
     return text
@@ -87,23 +80,22 @@ def find_quotations(text):
     return list(mat_small) + list(mat_double)
 
 def is_noun(word):
-    w, t = tagging(word)[0]
-    return t[0] == 'N'
+    _, tag = tagging(word)[0]
+    return tag[0] == 'N'
 
 @tokenizer
 def tokenize(text) -> List[str]:
     return [word for word in text.split() if not word in stopwords]
 
-# konlpy custom dic 써보기 
-# 
+# konlpy custom dic 써보기
 @tokenizer
-def stemize(text, pos_tag : List[TAG] = pos_tag, neg_tag : List[TAG] = neg_tag) -> List[str]:
+def stemize(text) -> List[str]:
     def extract_quotations(text) -> Union[List[str], str]:
         matches = []
-        c = 0
+        count = 0
         for match in find_quotations(text):
-            text = " ".join([text[:match.start() + c], zip_token, text[match.end() + c:]])
-            c += len(zip_token) - len(match.group()) + 2
+            text = " ".join([text[:match.start() + count], zip_token, text[match.end() + count:]])
+            count += len(zip_token) - len(match.group()) + 2
             matches.append(match.group()[1:-1])
         return (matches, text)
 
