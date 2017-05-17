@@ -1,8 +1,5 @@
-from KINCluster import settings
-
-from collections import OrderedDict
-
 from typing import List, Any
+from collections import OrderedDict
 
 class Item:
     def __init__(self, **kwargs):
@@ -10,12 +7,12 @@ class Item:
         why?: str and repr must return same value always
         """
         self.__e = OrderedDict()
-        for k, v in kwargs.items():
+        for key, value in kwargs.items():
             try:
-                setattr(self, k, v)
+                setattr(self, key, value)
             except:
                 raise "do not use item key like 'keys', 'items' or dumplicated key"
-            self.__e[k] = v
+            self.__e[key] = value
 
     def __str__(self) -> str:
         """represent text to clustering
@@ -30,8 +27,8 @@ class Item:
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-           return other.__e == self.__e
-        return False 
+            return other.__e == self.__e
+        return False
 
     @property
     def values(self) -> List[Any]:

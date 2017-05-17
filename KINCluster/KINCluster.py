@@ -1,34 +1,43 @@
-from KINCluster.core.cluster import Cluster 
-from KINCluster.core.pipeline import Pipeline 
-from KINCluster.core.extractor import Extractor 
-from KINCluster.lib.tokenizer import tokenize
+from types import ModuleType
+import logging
+
+from KINCluster.core.cluster import Cluster
+from KINCluster.core.extractor import Extractor
 from KINCluster import settings as sets
 
-from types import ModuleType
-
 class KINCluster:
-    def __init__(self, pipeline, cluster=Cluster, Extractor=Extractor, settings={}):
+    __log = logging
+    __log.basicConfig(level=logging.INFO)
+
+    def __init__(self, pipeline, cluster=Cluster, extractor=Extractor, settings={}):
         def getattrs(module):
-            keys = [k for k in dir(module) if not k.startswith('__')]
-            return { key: getattr(module, key) for key in keys }
+            keys = [key for key in dir(module) if not key.startswith('__')]
+            return {key: getattr(module, key) for key in keys}
 
         self.settings = getattrs(sets)
 
         if isinstance(settings, ModuleType):
             settings = getattrs(settings)
         if isinstance(settings, dict):
-            for k, v in settings.items():
-                self.settings[k] = v
+            for key, value in settings.items():
+                self.settings[key] = value
 
         self.pipeline = pipeline
-        self.cluster = Cluster(settings=self.settings)
-        self.Extractor = Extractor
+        self.cluster = cluster(settings=self.settings)
+        self.extractor = extractor
+        KINCluster.__log.info('KINCluster>> inited')
 
     def run(self):
+        KINCluster.__log.info('KINCluster>> start running...')
         for item in self.pipeline.capture_item():
             self.cluster.put_item(item)
+            
+        KINCluster.__log.info('KINCluster>> start clustering...')
         self.cluster.cluster()
+        KINCluster.__log.info('KINCluster>> done clustering.')
 
-        extractor = self.Extractor(self.cluster)
-        for idx, dump in enumerate(self.cluster.dumps):
+        KINCluster.__log.info('KINCluster>> start extracting...')
+        extractor = self.extractor(self.cluster)
+        for idx, _ in enumerate(self.cluster.dumps):
             self.pipeline.dress_item(extractor.dump(idx))
+        KINCluster.__log.info('KINCluster>> done extracting...')
